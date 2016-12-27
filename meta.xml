@@ -1,0 +1,8 @@
+<meta>
+	<info name="Freeroam Teleport" description="/tp, /tplist, /tpset, /tprem" author="Miss Melissa" type="gamemode" />
+
+	<assembly ref="System.Xml.dll" />
+	<assembly ref="System.Xml.Serialization.dll" />
+
+	<script src="freeroam-tp.cs" type="server" lang="csharp" />
+</meta>
