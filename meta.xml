@@ -1,5 +1,5 @@
 <meta>
-	<info name="Freeroam Teleport" description="/tp, /tplist, /tpset, /tprem" author="Miss Melissa" type="gamemode" />
+	<info name="Freeroam Teleport" description="/tp, /tplist, /tpset, /tprem" author="Miss Melissa" type="script" />
 
 	<assembly ref="System.Xml.dll" />
 	<assembly ref="System.Xml.Serialization.dll" />
