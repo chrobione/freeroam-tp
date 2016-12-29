@@ -2,6 +2,8 @@
 
 Very basic freeroam teleport resource for GTA Network servers. It stores the teleport locations in a file called `freeroam-tp.xml` in the server folder.
 
+![](Screenshot.png)
+
 ## Usage
 
 To see a list of possible teleport locations: `/tplist`
