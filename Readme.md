@@ -6,7 +6,7 @@ Very basic freeroam teleport resource for GTA Network servers. It stores the tel
 
 To see a list of possible teleport locations: `/tplist`
 
-To teleport to a teleport location: `/tp <name>`
+To teleport to a teleport location: `/tele <name>` or `/goto <name>`
 
 To add a new teleport location (you have to an admin): `/tpset <name>`
 
