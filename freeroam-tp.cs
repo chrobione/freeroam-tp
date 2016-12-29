@@ -59,7 +59,7 @@ namespace FreeroamTeleport
 			return m_teleportLocations.Find((tl) => tl.Name == name);
 		}
 
-		[Command("tp")]
+		[Command("tele", Alias = "goto")]
 		public void TeleportCommand(Client sender, string name)
 		{
 			var tl = GetLocation(name);
