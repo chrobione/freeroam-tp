@@ -1,6 +1,6 @@
 # freeroam-tp
 
-Very basic freeroam teleport resource for GTA Network servers. Currently does not (de)serialize teleport locations - this would be an excercise to the reader. :)
+Very basic freeroam teleport resource for GTA Network servers. It stores the teleport locations in a file called `freeroam-tp.xml` in the server folder.
 
 ## Usage
 
