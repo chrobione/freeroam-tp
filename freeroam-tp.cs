@@ -7,19 +7,68 @@ using GTANetworkShared;
 
 namespace FreeroamTeleport
 {
+	[Serializable]
+	public class TeleportLocation
+	{
+		public string Name { get; set; }
+		public Vector3 Position { get; set; }
+	}
+
 	public class FreeroamTeleportScript : Script
 	{
-		public Dictionary<string, Vector3> m_teleportLocations = new Dictionary<string, Vector3>();
+		public List<TeleportLocation> m_teleportLocations = new List<TeleportLocation>();
+
+		public FreeroamTeleportScript()
+		{
+			API.onResourceStart += API_onResourceStart;
+			API.onResourceStop += API_onResourceStop;
+		}
+
+		private void API_onResourceStart()
+		{
+			LoadLocations();
+		}
+
+		private void API_onResourceStop()
+		{
+			SaveLocations();
+		}
+
+		private void LoadLocations()
+		{
+			if (!File.Exists("freeroam-tp.xml")) {
+				return;
+			}
+
+			var serializer = new XmlSerializer(m_teleportLocations.GetType());
+			using (var reader = File.OpenRead("freeroam-tp.xml")) {
+				m_teleportLocations = (List<TeleportLocation>)serializer.Deserialize(reader);
+			}
+		}
+
+		private void SaveLocations()
+		{
+			var serializer = new XmlSerializer(m_teleportLocations.GetType());
+			using (var writer = File.OpenWrite("freeroam-tp.xml")) {
+				serializer.Serialize(writer, m_teleportLocations);
+			}
+		}
+
+		private TeleportLocation GetLocation(string name)
+		{
+			return m_teleportLocations.Find((tl) => tl.Name == name);
+		}
 
 		[Command("tp")]
 		public void TeleportCommand(Client sender, string name)
 		{
-			if (!m_teleportLocations.ContainsKey(name)) {
+			var tl = GetLocation(name);
+			if (tl == null) {
 				API.sendChatMessageToPlayer(sender, "~r~Location does not exist!");
 				return;
 			}
-			sender.position = m_teleportLocations[name];
-			API.sendChatMessageToPlayer(sender, "~g~Teleported!");
+			sender.position = tl.Position;
+			sender.sendChatMessage("~g~Teleported!");
 		}
 
 		[Command("tplist")]
@@ -32,29 +81,50 @@ namespace FreeroamTeleport
 
 			string ret = "";
 
-			foreach(var key in m_teleportLocations.Keys) {
-				ret += key + ", ";
+			foreach (var tl in m_teleportLocations) {
+				ret += tl.Name + ", ";
 			}
 
-			API.sendChatMessageToPlayer(sender, "~g~Locations: ~s~" + ret.Trim(',', ' '));
+			sender.sendChatMessage("~g~Locations: ~s~" + ret.Trim(',', ' '));
 		}
 
 		[Command("tpset", ACLRequired = true, Group = "Admin")]
 		public void TeleportSetCommand(Client sender, string name)
 		{
-			m_teleportLocations[name] = sender.position;
-			API.sendChatMessageToPlayer(sender, "~g~Location set!");
+			var tl = GetLocation(name);
+			if (tl == null) {
+				tl = new TeleportLocation();
+				tl.Name = name;
+				m_teleportLocations.Add(tl);
+			}
+			tl.Position = sender.position;
+			sender.sendChatMessage("~g~Location set!");
 		}
 
 		[Command("tprem", ACLRequired = true, Group = "Admin")]
 		public void TeleportRemoveCommand(Client sender, string name)
 		{
-			if (!m_teleportLocations.ContainsKey(name)) {
+			int index = m_teleportLocations.FindIndex((tl) => tl.Name == name);
+			if (index == -1) {
 				API.sendChatMessageToPlayer(sender, "~r~Location does not exist!");
 				return;
 			}
-			m_teleportLocations.Remove(name);
-			API.sendChatMessageToPlayer(sender, "~g~Location removed!");
+			m_teleportLocations.RemoveAt(index);
+			sender.sendChatMessage("~g~Location removed!");
+		}
+
+		[Command("tpload", ACLRequired = true, Group = "Admin")]
+		public void TeleportLoadCommand(Client sender)
+		{
+			LoadLocations();
+			sender.sendChatMessage("~g~Locations loaded!");
+		}
+
+		[Command("tpsave", ACLRequired = true, Group = "Admin")]
+		public void TeleportSaveCommand(Client sender)
+		{
+			SaveLocations();
+			sender.sendChatMessage("~g~Locations saved!");
 		}
 	}
 }
