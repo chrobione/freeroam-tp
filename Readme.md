@@ -10,7 +10,7 @@ To see a list of possible teleport locations: `/tplist`
 
 To teleport to a teleport location: `/tele <name>` or `/goto <name>`
 
-To add a new teleport location (you have to an admin): `/tpset <name>`
+To add a new teleport location (you have to be an admin): `/tpset <name>`
 
 To remove an existing teleport location (you have to be an admin): `/tprem <name>`
 
